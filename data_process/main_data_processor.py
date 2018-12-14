@@ -1,5 +1,5 @@
-from project.cast_data_processor import cast_data_process
-from project.movie_data_processor import movie_data_process
+from cast_data_processor import cast_data_process
+from movie_data_processor import movie_data_process
 from pyspark import SparkContext
 from pyspark.sql import SparkSession
 import pyspark.sql.functions as F
@@ -57,24 +57,18 @@ if __name__ == '__main__':
     average_cast_revenue = average_cast_revenue.withColumnRenamed("cast_id", "cid")
 
 
-
     movie_cast_average_revenue = movie_cast_renue.join(average_cast_revenue, average_cast_revenue.cid == movie_cast_renue.cast_id)
 
     square_rev_udf = F.udf(square_rev, StringType())
     movie_cast_average_revenue = movie_cast_average_revenue.withColumn('square_rev', square_rev_udf(movie_cast_average_revenue['avg(revenue)']))
 
     movie_cast_average_revenue = movie_cast_average_revenue.groupBy('mid').agg(F.sum('square_rev'))
-
     movie_cast_average_revenue = movie_cast_average_revenue.withColumn('cast_impression', F.sqrt(movie_cast_average_revenue['sum(square_rev)']))
-
     movie_cast_average_revenue = movie_cast_average_revenue.withColumnRenamed("mid", "mid2")
     movie_cast_average_revenue.printSchema()
 
     result = movie_cast_average_revenue.join(movieInfo, movieInfo.mid == movie_cast_average_revenue.mid2)
     result = result.select("mid", "mlanguage", "revenue", "title", "budget", "myear", "mgenres", "cast_impression")
-
-
-
     result.toPandas().to_csv('data_impression.csv')
 
     spark.stop()

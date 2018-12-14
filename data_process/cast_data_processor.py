@@ -1,7 +1,7 @@
 import json
 import re
 
-from project.cast_data_cleaner import clean_cast_data
+from cast_data_cleaner import clean_cast_data
 from pyspark.sql.functions import udf, explode, split
 from pyspark.sql.types import StringType
 

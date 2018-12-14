@@ -1,7 +1,7 @@
 import json
 
 # from project.cleanMovieData import clean_movie_data
-from project.movie_data_cleaner import clean_movie_data
+from movie_data_cleaner import clean_movie_data
 from pyspark.shell import sqlContext
 from pyspark.sql.functions import udf
 from pyspark.sql.types import StringType

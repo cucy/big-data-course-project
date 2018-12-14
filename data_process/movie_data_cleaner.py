@@ -1,8 +1,5 @@
 import csv
-
-
 import time
-
 from pyspark import Row
 
 genresDic = {'Mystery': 14, 'Romance': 8, 'History': 15, 'Family': 6, 'Fantasy': 10, 'Horror': 16, 'Crime': 0,
@@ -53,10 +50,3 @@ def clean_movie_data(line):
         return False
 
     return True
-
-
-
-
-
-
-
