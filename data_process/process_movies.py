@@ -54,7 +54,17 @@ get_year__udf = udf(get_year, StringType())
 get_language_udf = udf(get_language, StringType())
 get_genres_udf = udf(get_genres, StringType())
 
-# grade_function_udf = udf(get_grade, StringType())
+
+def get_casts(casts):
+    casts_json = json.loads(casts)
+    castids = []
+    for cast in casts_json:
+        castid = cast[['cast_id']]
+        castids.append(castid)
+    return castids
+
+get_casts_udf = udf(get_casts, StringType())
+
 
 if __name__ == '__main__':
     spark = SparkSession.builder.appName("project").getOrCreate()
@@ -83,5 +93,14 @@ if __name__ == '__main__':
 
     movieData = movieDataRaw2.select('mid', 'mlanguage', 'revenue', 'title', 'budget', 'myear', 'mgenres')
     movieData.show()
+
+    castDataRaw1 = spark.read.format("csv").option("header", "true").option("inferSchema", "true").option('quote',
+                                                                                                          '"').option(
+        'escape', '"').load(
+        "file:///Users/wesley/codes/RBDA_Project/Data/tmdb_5000_credits.csv").select(
+        "movie_id", "cast")
+    castDataRaw2 = castDataRaw1.withColumn('mid_new', get_id_udf())
+
+    # castDataRaw1.show()
 
     spark.stop()

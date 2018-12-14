@@ -1,11 +1,15 @@
 import json
+
+# from project.cleanMovieData import clean_movie_data
+from project.movie_data_cleaner import clean_movie_data
+from pyspark.shell import sqlContext
 from pyspark.sql.functions import udf
 from pyspark.sql.types import StringType
 
 # The serial number of each genre
 genresDic = {'Mystery': 14, 'Romance': 8, 'History': 15, 'Family': 6, 'Fantasy': 10, 'Horror': 16, 'Crime': 0,
              'Drama': 7, 'Science Fiction': 4, 'Animation': 5, 'Music': 9, 'Adventure': 2, 'Foreign': 18, 'Action': 3,
-             'Comedy': 1, 'Documentary': 17, 'War': 12, 'Thriller': 11, 'Western': 13}
+             'Comedy': 1, 'Documentary': 17, 'War': 12, 'Thriller': 11, 'Western': 13, 'error_data': 99}
 # The serial number of each language
 languageDic = {'en': 0, 'zh': 3, 'cn': 17, 'af': 9, 'vi': 20, 'is': 25, 'it': 6, 'xx': 22, 'id': 23, 'es': 2, 'ru': 12,
                'nl': 16, 'pt': 7, 'no': 18, 'nb': 21, 'th': 15, 'ro': 11, 'pl': 24, 'fr': 5, 'de': 1, 'da': 10,
@@ -20,7 +24,12 @@ def get_id(movie_id):
 # Get the year of a date
 # 2018-12-2 -> 2018
 def get_year(date):
-    return int(date.split("-")[0])
+    year = int(date.split("/")[2])
+    if(year >= 0 and year <= 18):
+        year = 2000 + year % 100
+    else:
+        year = 1900 + year % 100
+    return year
 
 
 # transfer the language of the movie to an array
@@ -42,7 +51,7 @@ def get_genres(genres):
     genres_json = json.loads(genres)
     genres_array = [0] * len(genresDic)
     for genre in genres_json:
-        genre_id = genresDic[genre['name']]
+        genre_id = genresDic.get(genre['name'], 0)
         genres_array[genre_id] = 1
     return genres_array
 
@@ -60,8 +69,14 @@ def movie_data_process(spark):
     movieDataRaw1 = spark.read.format("csv").option("header", "true").option("inferSchema", "true").option('quote',
                                                                                                            '"').option(
         'escape', '"').load(
-        "/finalProjectData/tmdb_5000_movies.csv").select(
+        "file:///Users/wesley/codes/python/test/tmdb_5000_movies.csv").select(
         "id", "original_language", "revenue", "title", "budget", "release_date", "genres")
+
+    # movieDataRaw1.show()
+    temp = movieDataRaw1.rdd
+    temp = temp.filter(clean_movie_data)
+
+    movieDataRaw1 = spark.createDataFrame(temp)
 
     # Transfer each attribute to standard format
     movieDataRaw2 = movieDataRaw1.withColumn('mid', get_id_udf(movieDataRaw1['id']))
