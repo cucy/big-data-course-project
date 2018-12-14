@@ -1,4 +1,4 @@
-# big-data-course-project
+# Big Data Course Final Project
 
 # Versions:
 - hadoop2.9.2
