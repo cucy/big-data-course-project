@@ -6,7 +6,7 @@ Spark
 elasticsearch
 Kibana
 
-. open hadoop
+1. open hadoop
 2. remove all result datas and source datas in hadoop(if exists)
 hadoop fs -rm -r /finalProjectData/result
 hadoop fs -rm -r /finalProjectData/tmdb_5000_movies.csv
