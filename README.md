@@ -9,13 +9,14 @@
 
 # How to run 
 ## 1. start environment:
-1) Hadoop:
-/Users/wesley/important/hadoop-2.9.2/sbin/start-dfs.sh
-/Users/wesley/important/hadoop-2.9.2/sbin/start-yarn.sh
-2) elasticsearch:
+1) Hadoop:  
+/Users/wesley/important/hadoop-2.9.2/sbin/start-dfs.sh  
+/Users/wesley/important/hadoop-2.9.2/sbin/start-yarn.sh  
+
+2) elasticsearch:  
 /Users/wesley/important/elasticsearch-6.5.2/bin/elasticsearch
 
-3) kibana:
+3) kibana:  
 /Users/wesley/important/kibana-6.5.2-darwin-x86_64/bin/kibana
 
 ## 2. remove all result datas and source datas in hadoop(if exists)
