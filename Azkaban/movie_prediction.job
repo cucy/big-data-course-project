@@ -1,0 +1,2 @@
+type=command
+command=hadoop fs -rm -r /finalProjectData/1.txt 
