@@ -19,6 +19,9 @@
 3) kibana:  
 /Users/wesley/important/kibana-6.5.2-darwin-x86_64/bin/kibana
 
+4) Azkaban:
+/Users/wesley/important/azkaban-solo-server-0.1.0-SNAPSHOT/bin/azkaban-solo-start.sh
+
 ## 2. remove all result datas and source datas in hadoop(if exists)
   
 hadoop fs -rm -r /finalProjectData/result  
