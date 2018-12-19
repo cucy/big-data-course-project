@@ -9,6 +9,7 @@ from pyspark.mllib.util import MLUtils
 from pyspark.mllib.stat import Statistics
 import json, ast
 import configparser
+import math
 
 
 save = False
@@ -22,8 +23,6 @@ save = False
 
 twitterFile = "/finalProjectData/twitter_data.json"
 movieFile = "/finalProjectData/result/data_impression.csv"
-# model_config = "/finalProjectData/model_config.cfg"
-# outputFile = "/finalProjectData/machine.txt"
 outputFile = "/Users/wesley/codes/machine.txt"
 
 sc = SparkContext('local', 'predict_model')
@@ -70,17 +69,9 @@ def movie_data_process():
     data = sqlContext.read.format('csv').option("header", "true").\
         load(movieFile).\
         select('mid','revenue','budget','cast_impression','myear','mgenres','mlanguage')
-    # print("")
-    # data.show()
-    # quit()
+
     movieRdd = data.rdd
     movieRdd = movieRdd.filter(parse_movie)
-    # print("---------------movie111---------------------\n")
-    # print(movieRdd.collect())
-    # print("---------------movie111---------------------\n")
-    # quit()
-
-
     movieRdd = movieRdd.map(lambda x : [x.mid] + [x.revenue] + [x.budget] + [x.cast_impression] + [x.myear] + ast.literal_eval(x.mgenres) +
                                      ast.literal_eval(x.mlanguage))
     movieRdd = movieRdd.map(parse_movie_id)
@@ -127,33 +118,17 @@ def evaluation(model, test_data, f):
     labelsAndPredictions = test_data.map(lambda lp: lp.label).zip(predictions)
     test_percentage_err_mean = labelsAndPredictions.map(lambda lp: abs(lp[0] - lp[1]) / lp[0]).sum() / float(labelsAndPredictions.count())
     test_error_sqaure_mean= labelsAndPredictions.map(lambda lp: (lp[0] - lp[1]) * (lp[0] - lp[1])).sum() / float(labelsAndPredictions.count())
-
+    test_error_sqaure_mean = math.sqrt(test_error_sqaure_mean)
     f.write("evaluating the section: \n")
     f.write("THe pearson corrolation equals:\n")
     f.write(str(Statistics.corr(labelsAndPredictions, method="pearson")) + '\n')
     f.write('Test Mean Squared Error = ' + str(test_error_sqaure_mean) + '\n')
     f.write('Test Mean Precentage Error = ' + str(test_percentage_err_mean) + '\n')
 
-    # print("evaluating the section: ")
-    # print("THe pearson corrolation equals:")
-    # print(str(Statistics.corr(labelsAndPredictions, method="pearson")))
-    # # f.write()
-    # print('Test Mean Squared Error = ' + str(test_error_sqaure_mean))
-    # print('Test Mean Precentage Error = ' + str(test_percentage_err_mean))
-
-
-
 if __name__ == '__main__':
     # process data rdd and then join data togerther with movie id
     movieRdd = movie_data_process()
     twitter = twitter_data_process()
-    # print("---------------movie---------------------\n")
-    # print(movieRdd.collect())
-    # print("---------------movie---------------------\n")
-    # quit()
-    # print("twitter:_________________------------------------------------\n")
-    # print(twitter.collect())
-    # quit()
     parsed_data = twitter.join(movieRdd)
     parsed_data = parsed_data.map(lambda x : tuple_to_LB(x))
     training_data, test_data = parsed_data.randomSplit([0.7, 0.3])

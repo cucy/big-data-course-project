@@ -1,0 +1,3 @@
+type=command
+dependencies=processor
+command=sh ./predict.sh

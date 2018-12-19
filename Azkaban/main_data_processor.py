@@ -292,7 +292,7 @@ if __name__ == '__main__':
     result = movie_cast_average_revenue.join(movieInfo, movieInfo.mid == movie_cast_average_revenue.mid2)
     result = result.select("mid", "mlanguage", "revenue", "title", "budget", "myear", "mgenres", "cast_impression")
     # result.toPandas().to_csv('data_impression.csv')
-    result.write.option("header", "true").format("csv").save("/finalProjectData/result/data_impression.csv")
+    result.write.option("header", "true").format("csv").save("/finalProjectData/result/1/data_impression.csv")
     # result.show()
 
     spark.stop()

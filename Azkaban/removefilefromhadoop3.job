@@ -1,0 +1,3 @@
+type=command
+dependencies=removefilefromhadoop2
+command=hadoop fs -rm -r /finalProjectData/tmdb_5000_credits.csv

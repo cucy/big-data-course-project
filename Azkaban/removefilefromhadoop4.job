@@ -1,0 +1,3 @@
+type=command
+dependencies=removefilefromhadoop3
+command=hadoop fs -put /Users/wesley/codes/python/test/tmdb_5000_movies.csv /finalProjectData/
