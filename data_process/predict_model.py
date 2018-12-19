@@ -23,8 +23,8 @@ save = False
 twitterFile = "/finalProjectData/twitter_data.json"
 movieFile = "/finalProjectData/result/data_impression.csv"
 model_config = "/finalProjectData/model_config.cfg"
-outputFile = "/finalProjectData/result.txt"
-
+# outputFile = "/finalProjectData/machine.txt"
+outputFile = "/Users/wesley/codes/machine.txt"
 
 sc = SparkContext('local', 'predict_model')
 sqlContext = SQLContext(sc)
@@ -140,16 +140,25 @@ if __name__ == '__main__':
     # process data rdd and then join data togerther with movie id
     config = configparser.ConfigParser()
     config.read(model_config)
+    print("---------------0----------------")
+    print(config)
+    print("--------------------------------")
+    quit()
     movieRdd = movie_data_process()
     twitter = twitter_data_process()
     parsed_data = twitter.join(movieRdd)
     parsed_data = parsed_data.map(lambda x : tuple_to_LB(x))
     training_data, test_data = parsed_data.randomSplit([0.7, 0.3])
-    f = open('workfile', 'w')
+    f = open(outputFile, 'w')
+
 
     for section in config.sections():
+        print("---------------1----------------")
+        print(section)
+        print("--------------------------------")
         if 'data' in section:
             continue
+        print("********************XXXXXXXXXXXXXXXXXXX+++++++++++++++++++")
         model = model_factory(training_data, section, config,
                               get_cata_dict(config))
-        evaluation(section, model, test_data, )
+        evaluation(section, model, test_data, f)
