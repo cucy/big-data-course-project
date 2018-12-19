@@ -74,10 +74,10 @@ def get_id(movie_id):
 # 2018-12-2 -> 2018
 def get_year(date):
     year = int(date.split("-")[2])
-    # if(year >= 0 and year <= 18):
-    #     year = 2000 + year % 100
-    # else:
-    #     year = 1900 + year % 100
+    if(year >= 0 and year <= 18):
+        year = 2000 + year % 100
+    else:
+        year = 1900 + year % 100
     return year
 
 
