@@ -13,13 +13,7 @@
 /Users/wesley/important/hadoop-2.9.2/sbin/start-dfs.sh  
 /Users/wesley/important/hadoop-2.9.2/sbin/start-yarn.sh  
 
-2) elasticsearch:  
-/Users/wesley/important/elasticsearch-6.5.2/bin/elasticsearch
-
-3) kibana:  
-/Users/wesley/important/kibana-6.5.2-darwin-x86_64/bin/kibana
-
-4) Azkaban:
+2) Azkaban:
 /Users/wesley/important/azkaban-solo-server-0.1.0-SNAPSHOT/bin/azkaban-solo-start.sh
 
 ## 2. remove all result datas and source datas in hadoop(if exists)
@@ -42,8 +36,5 @@ hadoop fs -put /Users/wesley/codes/python/test/tmdb_5000_credits.csv /finalProje
 
 /Users/wesley/codes/bigdatafinal/data_process/main_data_processor.py
 
-## 5. run write_to_es to write cast_impresssion_data to es  
-
-/Users/wesley/important/spark-2.4.0-bin-hadoop2.7/bin/spark-submit --master local[2] --jars elasticsearch-spark-20_2.11-6.5.2.jar /Users/wesley/codes/bigdatafinal/data_process/write_to_es.py
-
-## 6. open http://0.0.0.0:5601 to check data
+## 5. run predict to do machine learning
+/Users/wesley/important/spark-2.4.0-bin-hadoop2.7/bin/spark-submit --master local[2] --name spark-local2 /Users/wesley/codes/bigdatafinal/data_process/predict_model.py
