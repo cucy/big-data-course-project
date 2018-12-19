@@ -23,6 +23,7 @@ save = False
 twitterFile = "/finalProjectData/twitter_data.json"
 movieFile = "/finalProjectData/result/data_impression.csv"
 model_config = "/finalProjectData/model_config.cfg"
+outputFile = "/finalProjectData/result.txt"
 
 
 sc = SparkContext('local', 'predict_model')
@@ -122,17 +123,17 @@ def model_factory(training_data, section, config, categorical_features_info={}):
     return model
 
 #evaluate the model we build by the training_data
-def evaluation(section, model, test_data):
+def evaluation(section, model, test_data, f):
     predictions = model.predict(test_data.map(lambda x: x.features))
     gold = test_data.map(lambda x : x.label)
     labelsAndPredictions = test_data.map(lambda lp: lp.label).zip(predictions)
     test_percentage_err_mean = labelsAndPredictions.map(lambda lp: abs(lp[0] - lp[1]) / lp[0]).sum() / float(labelsAndPredictions.count())
     test_error_sqaure_mean= labelsAndPredictions.map(lambda lp: (lp[0] - lp[1]) * (lp[0] - lp[1])).sum() / float(labelsAndPredictions.count())
-    print("evaluating the section: " + section)
-    print("THe pearson corrolation equals:")
-    print(Statistics.corr(labelsAndPredictions, method="pearson"))
-    print('Test Mean Squared Error = ' + str(test_error_sqaure_mean))
-    print('Test Mean Precentage Error = ' + str(test_percentage_err_mean))
+    f.write("evaluating the section: " + section)
+    f.write("THe pearson corrolation equals:")
+    f.write(Statistics.corr(labelsAndPredictions, method="pearson"))
+    f.write('Test Mean Squared Error = ' + str(test_error_sqaure_mean))
+    f.write('Test Mean Precentage Error = ' + str(test_percentage_err_mean))
 
 
 if __name__ == '__main__':
@@ -144,11 +145,11 @@ if __name__ == '__main__':
     parsed_data = twitter.join(movieRdd)
     parsed_data = parsed_data.map(lambda x : tuple_to_LB(x))
     training_data, test_data = parsed_data.randomSplit([0.7, 0.3])
+    f = open('workfile', 'w')
 
     for section in config.sections():
         if 'data' in section:
             continue
         model = model_factory(training_data, section, config,
                               get_cata_dict(config))
-
-        evaluation(section, model, test_data)
+        evaluation(section, model, test_data, )
