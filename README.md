@@ -8,6 +8,10 @@
 - python 3.7.1
 
 # How to run 
+## use Azkaban
+upload big-data-course-project/Azkaban/upload this.zip to Azkaban and run this task
+
+## OR use command line
 ## 1. start environment:
 1) Hadoop:  
 /Users/wesley/important/hadoop-2.9.2/sbin/start-dfs.sh  
