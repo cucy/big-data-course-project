@@ -3,8 +3,6 @@
 # Versions:
 - hadoop 2.9.2
 - Spark 2.4.0
-- elasticsearch 6.5.2
-- Kibana 6.5.2
 - python 3.7.1
 
 # How to run 
