@@ -118,7 +118,7 @@ def evaluation(model, test_data, f):
     labelsAndPredictions = test_data.map(lambda lp: lp.label).zip(predictions)
     test_percentage_err_mean = labelsAndPredictions.map(lambda lp: abs(lp[0] - lp[1]) / lp[0]).sum() / float(labelsAndPredictions.count())
     test_error_sqaure_mean= labelsAndPredictions.map(lambda lp: (lp[0] - lp[1]) * (lp[0] - lp[1])).sum() / float(labelsAndPredictions.count())
-    test_error_sqaure_mean = math.sqrt(test_error_sqaure_mean)
+    test_error_sqaure_mean = math.sqrt(test_error_sqaure_mean) / float(labelsAndPredictions.count())
     f.write("evaluating the section: \n")
     f.write("THe pearson corrolation equals:\n")
     f.write(str(Statistics.corr(labelsAndPredictions, method="pearson")) + '\n')

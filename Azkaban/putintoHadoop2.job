@@ -1,3 +1,3 @@
 type=command
-dependencies=removefilefromhadoop4
+dependencies=putintoHadoop1
 command=hadoop fs -put /Users/wesley/codes/python/test/tmdb_5000_credits.csv /finalProjectData/
